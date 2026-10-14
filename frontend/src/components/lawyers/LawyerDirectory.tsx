@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { MOCK_LAWYERS } from '../../data/lawyers';
-
-import { LawyerFilterState } from '../../types';
-import { LawyerFilters } from  './LawyerFilters';
+import { Lawyer, LawyerFilterState } from '../../types';
+import { LawyerFilters } from './LawyerFilters';
+import { LawyerProfile } from './LawyerProfileModal'; 
 
 export const LawyerDirectory: React.FC = () => {
+  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null); // <-- Nayi state
+
   const [filters, setFilters] = useState<LawyerFilterState>({
     searchQuery: '',
     selectedCourt: 'All',
@@ -19,16 +21,24 @@ export const LawyerDirectory: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...updated }));
   };
 
-  // Filtering Logic
   const filteredLawyers = MOCK_LAWYERS.filter((lawyer) => {
     const matchesSearch = lawyer.name.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
                           lawyer.barCouncilId.toLowerCase().includes(filters.searchQuery.toLowerCase());
-    
     const matchesCourt = filters.selectedCourt === 'All' || lawyer.courts.includes(filters.selectedCourt);
     const matchesFee = lawyer.consultationFee <= filters.maxFee;
-
     return matchesSearch && matchesCourt && matchesFee;
   });
+
+  // AGAR KOI LAWYER CLICK HUA HAI, TOH USKA PROFILE PAGE DIKHAO
+  if (selectedLawyer) {
+    return (
+      <LawyerProfile 
+        lawyer={selectedLawyer} 
+        onBack={() => setSelectedLawyer(null)} 
+        onBookClick={(lawyer) => alert(`Opening consultation slot booking flow for ${lawyer.name}`)}
+      />
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -37,18 +47,20 @@ export const LawyerDirectory: React.FC = () => {
         <p className="text-gray-600 text-sm mt-1">Connect with specialized legal experts for structured pre-briefing and consultation.</p>
       </div>
 
-      {/* Filters Component */}
       <LawyerFilters filters={filters} onFilterChange={handleFilterChange} />
 
-      {/* Lawyer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredLawyers.map((lawyer) => (
-          <div key={lawyer.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div 
+            key={lawyer.id} 
+            onClick={() => setSelectedLawyer(lawyer)} // <-- Card click par profile open hogi
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer"
+          >
             <div>
               <div className="flex items-center space-x-4 mb-4">
                 <img src={lawyer.avatarUrl} alt={lawyer.name} className="w-14 h-14 rounded-full object-cover border" />
                 <div>
-                  <h4 className="font-semibold text-gray-900">{lawyer.name}</h4>
+                  <h4 className="font-semibold text-gray-900 hover:text-indigo-600">{lawyer.name}</h4>
                   <span className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded-full">
                     {lawyer.barCouncilId}
                   </span>
@@ -72,22 +84,13 @@ export const LawyerDirectory: React.FC = () => {
                 <span className="text-xs text-gray-400 block">Consultation Fee</span>
                 <span className="text-base font-bold text-gray-900">₹{lawyer.consultationFee}</span>
               </div>
-              <button 
-                onClick={() => alert(`Booking consultation flow for ${lawyer.name}`)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-              >
-                Book Slot
-              </button>
+              <span className="text-indigo-600 text-sm font-medium hover:underline">
+                View Profile &rarr;
+              </span>
             </div>
           </div>
         ))}
       </div>
-
-      {filteredLawyers.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-500 text-sm">No advocates found matching your filter criteria.</p>
-        </div>
-      )}
     </div>
   );
 };

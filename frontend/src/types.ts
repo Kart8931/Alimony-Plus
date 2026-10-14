@@ -22,3 +22,25 @@ export interface LawyerFilterState {
   maxFee: number;
   language: string;
 }
+
+export interface LawyerReview {
+  id: string;
+  clientName: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+export interface TimeSlot {
+  id: string;
+  time: string; // e.g., "10:00 AM - 10:30 AM"
+  isAvailable: boolean;
+}
+
+export interface BookingRequest {
+  lawyerId: string;
+  date: string;
+  slotId: string;
+  consultationType: 'Video' | 'Audio' | 'In-Person';
+  clientNotes: string;
+}
