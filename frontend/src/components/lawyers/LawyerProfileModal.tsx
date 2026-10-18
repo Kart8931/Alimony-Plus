@@ -1,27 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Lawyer } from '../../types';
 import { ShieldCheck, Star, Award, MapPin, Calendar, ArrowLeft } from 'lucide-react';
+import { BookingModal } from './BookingModal';
+import { Appointment } from './ClientAppointment';
 
 interface LawyerProfileProps {
   lawyer: Lawyer;
   onBack: () => void;
-  onBookClick: (lawyer: Lawyer) => void;
+  onBookingSuccess: (appointment: Appointment) => void;
 }
 
-export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, onBookClick }) => {
+export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, onBookingSuccess }) => {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Back Button */}
+    <div className="max-w-4xl mx-auto px-4 py-8 relative">
       <button 
         onClick={onBack}
         className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-indigo-600 mb-6 transition-colors"
       >
-        <ArrowLeft size={16} className="mr-2" /> Back to Directory
+        <ArrowLeft size={16} className="mr-2" /> Back to Advocates Directory
       </button>
 
-      {/* Profile Header Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-center space-x-5">
@@ -47,12 +49,11 @@ export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, on
             </div>
           </div>
 
-          {/* Fee & Action Box */}
           <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 w-full md:w-auto text-center md:text-right">
             <span className="text-xs text-gray-500 block">Consultation Fee</span>
             <span className="text-2xl font-extrabold text-gray-900">₹{lawyer.consultationFee}</span>
             <button
-              onClick={() => onBookClick(lawyer)}
+              onClick={() => setIsBookingOpen(true)}
               className="mt-3 w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-lg text-sm shadow-sm transition-all flex items-center justify-center space-x-2"
             >
               <Calendar size={16} />
@@ -62,16 +63,13 @@ export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, on
         </div>
       </div>
 
-      {/* Detailed Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-6">
-          {/* About Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">About Advocate</h3>
             <p className="text-gray-600 leading-relaxed text-sm">{lawyer.bio}</p>
           </div>
 
-          {/* Court Specializations */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Court Specializations</h3>
             <div className="flex flex-wrap gap-2">
@@ -84,7 +82,6 @@ export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, on
           </div>
         </div>
 
-        {/* Sidebar Info */}
         <div className="space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Languages Spoken</h3>
@@ -98,6 +95,17 @@ export const LawyerProfile: React.FC<LawyerProfileProps> = ({ lawyer, onBack, on
           </div>
         </div>
       </div>
+
+      {isBookingOpen && (
+        <BookingModal 
+          lawyer={lawyer} 
+          onClose={() => setIsBookingOpen(false)} 
+          onBookingSuccess={(apt) => {
+            onBookingSuccess(apt);
+            setIsBookingOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

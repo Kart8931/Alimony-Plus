@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { MOCK_LAWYERS } from '../../data/lawyers';
 import { Lawyer, LawyerFilterState } from '../../types';
 import { LawyerFilters } from './LawyerFilters';
-import { LawyerProfile } from './LawyerProfileModal'; 
+import { LawyerProfile } from './LawyerProfileModal';
+import { ClientAppointments, Appointment } from './ClientAppointment';
 
 export const LawyerDirectory: React.FC = () => {
-  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null); // <-- Nayi state
+  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const [filters, setFilters] = useState<LawyerFilterState>({
     searchQuery: '',
@@ -29,13 +31,16 @@ export const LawyerDirectory: React.FC = () => {
     return matchesSearch && matchesCourt && matchesFee;
   });
 
-  // AGAR KOI LAWYER CLICK HUA HAI, TOH USKA PROFILE PAGE DIKHAO
+  const handleAddAppointment = (newApt: Appointment) => {
+    setAppointments((prev) => [newApt, ...prev]);
+  };
+
   if (selectedLawyer) {
     return (
       <LawyerProfile 
         lawyer={selectedLawyer} 
         onBack={() => setSelectedLawyer(null)} 
-        onBookClick={(lawyer) => alert(`Opening consultation slot booking flow for ${lawyer.name}`)}
+        onBookingSuccess={handleAddAppointment}
       />
     );
   }
@@ -49,11 +54,12 @@ export const LawyerDirectory: React.FC = () => {
 
       <LawyerFilters filters={filters} onFilterChange={handleFilterChange} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Lawyer Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {filteredLawyers.map((lawyer) => (
           <div 
             key={lawyer.id} 
-            onClick={() => setSelectedLawyer(lawyer)} // <-- Card click par profile open hogi
+            onClick={() => setSelectedLawyer(lawyer)}
             className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer"
           >
             <div>
@@ -91,6 +97,9 @@ export const LawyerDirectory: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* User's Booked Appointments Summary Section */}
+      <ClientAppointments appointments={appointments} />
     </div>
   );
 };
