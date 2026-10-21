@@ -33,7 +33,7 @@ import {
   SlidersHorizontal,
   BookOpen,
   User,
-  Users,
+ 
 } from "lucide-react";
 import { useWorkspace } from "./workspace-provider";
 import { Badge, Empty, PageHeading, ExternalLink } from "./ui";
@@ -56,7 +56,7 @@ const nav = [
   { id: "payments", title: "Maintenance", icon: Wallet },
   { id: "documents", title: "Documents", icon: Files },
   { id: "calculator", title: "Planning calculator", icon: Calculator },
-  { id: "lawyers", title: "Lawyer Directory", icon: Users },
+  { id: "lawyers", title: "Lawyer Directory", icon: User },
 ];
 const pageTitles: Record<string, string> = {
   dashboard: "Overview",
