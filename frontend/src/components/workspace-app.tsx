@@ -33,7 +33,7 @@ import {
   SlidersHorizontal,
   BookOpen,
   User,
-  Users
+  Users,
 } from "lucide-react";
 import { useWorkspace } from "./workspace-provider";
 import { Badge, Empty, PageHeading, ExternalLink } from "./ui";
@@ -68,7 +68,7 @@ const pageTitles: Record<string, string> = {
   "data-review": "Data workspace",
   help: "Help & legal aid",
   settings: "Settings",
-  lawyers: "Verified Advocates Directory", 
+  lawyers: "Verified Advocates Directory",
 };
 
 export function WorkspaceApp({ section }: { section: string }) {
@@ -1199,15 +1199,15 @@ export function WorkspaceApp({ section }: { section: string }) {
           )}
 
           {section === "lawyers" && (
-  <>
-    <PageHeading
-      eyebrow="EXPERT ADVOCATES"
-      title="Bar Council Verified Directory"
-      description="Connect with specialized legal experts for structured pre-briefing and consultation."
-    />
-    <LawyerDirectory />
-  </>
-)}
+            <>
+              <PageHeading
+                eyebrow="EXPERT ADVOCATES"
+                title="Bar Council Verified Directory"
+                description="Connect with specialized legal experts for structured pre-briefing and consultation."
+              />
+              <LawyerDirectory />
+            </>
+          )}
           {section === "help" && <HelpView />}
           {section === "settings" && <SettingsView />}
           <footer className="footer">
