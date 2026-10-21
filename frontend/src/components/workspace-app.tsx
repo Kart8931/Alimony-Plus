@@ -32,7 +32,10 @@ import {
   Bell,
   SlidersHorizontal,
   BookOpen,
+  User,
   Users,
+  ClipboardList,
+  Compass,
 } from "lucide-react";
 import { useWorkspace } from "./workspace-provider";
 import { Badge, Empty, PageHeading, ExternalLink } from "./ui";
